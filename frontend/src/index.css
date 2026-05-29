@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark: #0d1117;
+  --color-dark-lighter: #161b22;
+  --color-neon-blue: #58a6ff;
+  --color-neon-purple: #bc8cff;
+}
+
+/* Styles de base pour ton thème sombre */
+:root {
+  background-color: #0d1117;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  font-family: 'Inter', sans-serif;
+}
+ 
+/* Scrollbar stylisée pour un look moderne */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #58a6ff;
+}

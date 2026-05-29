@@ -1,6 +1,6 @@
 import fitz  # PyMuPDF
 import os
-from database_setup import indexer_chunks
+from database_setup import indexer_chunks  # type: ignore
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 def extract_clean_text(pdf_path):
@@ -14,7 +14,7 @@ def extract_clean_text(pdf_path):
     for page in doc:
         blocks = page.get_text("blocks")
         # Filtrage y=50 à height-50 pour le Bulletin Officiel
-        filtered_blocks = [b[4] for b in blocks if 50 < b[1] < page.rect.height - 50]
+        filtered_blocks = [b[4] for b in blocks if 50 < float(b[1]) < page.rect.height - 50]
         text += "\n".join(filtered_blocks) + "\n"
     return text.strip()
 

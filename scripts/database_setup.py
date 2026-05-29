@@ -1,9 +1,13 @@
 from pinecone import Pinecone, ServerlessSpec
 from sentence_transformers import SentenceTransformer
 import time
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # 1. Connexion à Pinecone (Utilisez votre clé API)
-pc = Pinecone(api_key="pcsk_4U8X6q_MjkfU2LaPZ3NP4cbduoQzczoAN9DC7wi2EexSjMcaD22XNm2X9FVocohLJdvDRE")
+pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY", "pcsk_4y7sKf_8sYumckSZn47dKNhZ95UNM5rxvSjeufzwsveeRZkcwZF8pT5AQUzHbeRLQF6Dzq"))
 
 # 2. Configuration de l'index
 index_name = "reglementation-it-maroc"
@@ -23,7 +27,7 @@ if index_name not in existing_indexes:
         )
     )
     # Attendre que l'index soit prêt (important pour Pinecone Serverless)
-    while not pc.describe_index(index_name).status['ready']:
+    while not pc.describe_index(index_name).status.ready:
         time.sleep(1)
     print(f"Index '{index_name}' créé et prêt.")
 else:

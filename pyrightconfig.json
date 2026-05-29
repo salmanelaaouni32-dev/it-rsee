@@ -1,0 +1,12 @@
+{
+  "venvPath": "c:/Users/c/Desktop/PROJET_PFE_IT_RSE",
+  "venv": ".venv",
+  "executionEnvironments": [
+    {
+      "root": "c:/Users/c/Desktop/PROJET_PFE_IT_RSE/backend"
+    }
+  ],
+  "extraPaths": [
+    "c:/Users/c/Desktop/PROJET_PFE_IT_RSE/scripts"
+  ]
+}

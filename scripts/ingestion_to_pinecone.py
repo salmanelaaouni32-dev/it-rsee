@@ -2,8 +2,8 @@ import sys
 import os
 sys.path.append(os.path.dirname(__file__))
 
-from ingection import extract_clean_text, create_chunks
-from database_setup import indexer_chunks
+from ingection import extract_clean_text, create_chunks  # type: ignore
+from database_setup import indexer_chunks  # type: ignore
 
 # 1. On définit les sources
 pdf_path = r'C:\Users\c\Desktop\PROJET_PFE_IT_RSE\data\raw\loi-09-08-protection-donnees-personnelles.pdf' # Vérifiez le nom exact
