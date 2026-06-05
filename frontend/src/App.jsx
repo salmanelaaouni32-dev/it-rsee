@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { MessageSquare, ShieldAlert, BarChart3, Send, ShieldCheck, Zap, Sun, Moon, Globe, Lock, FileText, Mic } from 'lucide-react';
+import { MessageSquare, ShieldAlert, BarChart3, Send, ShieldCheck, Zap, Sun, Moon, Globe, Lock, FileText, Mic, Search, Plus, Pencil, MoreHorizontal } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const API_BASE = 'http://127.0.0.1:8000';
@@ -12,7 +12,7 @@ const checkDanger = (text) => {
 };
 
 const App = () => {
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
   
   // États Consultation (Chat)
@@ -37,10 +37,13 @@ const App = () => {
   const streamRef = useRef(null);
 
   useEffect(() => {
+    const root = document.documentElement;
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
+      root.style.colorScheme = 'dark';
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      root.style.colorScheme = 'light';
     }
   }, [darkMode]);
 
@@ -231,42 +234,75 @@ const App = () => {
     }
   };
 
+  const chatSuggestions = [
+    {
+      icon: <FileText size={20} className="text-[#107c41]" />,
+      title: "Quelles sont les obligations de la loi 09-08 sur les données personnelles ?",
+      sub: "Loi marocaine — protection des données",
+      prompt: "Quelles sont les obligations principales de la loi 09-08 sur les données personnelles au Maroc ?",
+    },
+    {
+      icon: <ShieldAlert size={20} className="text-[#d83b01]" />,
+      title: "Évaluer les risques d'une fuite de données",
+      sub: "Analyse de conformité",
+      prompt: "Quels sont les risques juridiques et les sanctions en cas de fuite de données personnelles au Maroc ?",
+    },
+    {
+      icon: <Lock size={20} className="text-[#0078d4]" />,
+      title: "Checklist cybersécurité loi 05-20",
+      sub: "Sécurité des systèmes d'information",
+      prompt: "Donne-moi une checklist de conformité à la loi 05-20 sur la cybersécurité au Maroc.",
+    },
+  ];
+
+  const tabLabels = { chat: 'Consultation', audit: 'Audit Expert', stats: 'Performance' };
+
+  const dk = darkMode;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#fbfffc] via-[#f6fcf8] to-[#eef7f1] dark:bg-[#0d1117] text-gray-800 dark:text-gray-100 flex font-sans overflow-hidden transition-colors duration-500 relative">
+    <div className={`min-h-screen flex overflow-hidden transition-colors duration-300 ${
+      dk ? 'bg-[#0d1117] text-[#c9d1d9]' : 'bg-white text-[#242424]'
+    }`}>
       
       {/* --- SIDEBAR --- */}
-      <aside className="w-72 bg-white/70 dark:bg-[#161b22] border-r border-emerald-100 dark:border-gray-800 flex flex-col p-6 z-20 backdrop-blur-xl shadow-[0_6px_24px_rgba(15,23,42,0.06)]">
-        <div className="flex items-center gap-3 mb-10">
-          <div className="bg-gradient-to-br from-[#58a6ff] to-[#bc8cff] p-2 rounded-xl shadow-lg shadow-blue-500/20">
-            <ShieldCheck size={28} className="text-white" />
+      <aside className={`w-[260px] shrink-0 flex flex-col border-r ${
+        dk ? 'bg-[#0d1117] border-[#30363d]' : 'bg-[#f5f5f5] border-[#e1dfdd]'
+      }`}>
+        <div className="px-4 pt-5 pb-4">
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className={`p-1.5 rounded-lg ${dk ? 'bg-[#161b22] border border-[#30363d]' : 'bg-white shadow-sm border border-[#e1dfdd]'}`}>
+              <ShieldCheck size={22} className={dk ? 'text-[#58a6ff]' : 'text-[#0f6cbd]'} />
+            </div>
+            <h1 className={`text-[15px] font-semibold ${dk ? 'text-[#f0f6fc]' : 'text-[#242424]'}`}>
+              LegalTech AI
+            </h1>
           </div>
-          <h1 className="text-xl font-bold tracking-tight dark:text-white">LegalTech <span className="text-[#58a6ff]">AI</span></h1>
+
+          <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
+            dk ? 'bg-[#161b22] border border-[#30363d] text-[#8b949e]' : 'bg-white border border-[#e1dfdd] text-[#616161]'
+          }`}>
+            <Search size={16} />
+            <span className="text-[13px]">Rechercher</span>
+          </div>
         </div>
 
-        <nav className="space-y-3 flex-1">
-          <TabButton active={activeTab === 'chat'} onClick={() => setActiveTab('chat')} icon={<MessageSquare size={20}/>} label="Consultation" />
-          <TabButton active={activeTab === 'audit'} onClick={() => setActiveTab('audit')} icon={<ShieldAlert size={20}/>} label="Audit Expert" />
-          <TabButton active={activeTab === 'stats'} onClick={() => setActiveTab('stats')} icon={<BarChart3 size={20}/>} label="Performance" />
+        <nav className="flex-1 px-2 space-y-0.5 overflow-y-auto custom-scrollbar">
+          <TabButton darkMode={dk} active={activeTab === 'chat'} onClick={() => setActiveTab('chat')} icon={<MessageSquare size={18}/>} label="Consultation" />
+          <TabButton darkMode={dk} active={activeTab === 'audit'} onClick={() => setActiveTab('audit')} icon={<ShieldAlert size={18}/>} label="Audit Expert" />
+          <TabButton darkMode={dk} active={activeTab === 'stats'} onClick={() => setActiveTab('stats')} icon={<BarChart3 size={18}/>} label="Performance" />
         </nav>
 
-        <button 
-          onClick={toggleTheme} 
-          className="mb-6 flex items-center justify-center gap-3 p-4 rounded-2xl border border-emerald-100 dark:border-gray-700 hover:bg-emerald-50/60 dark:hover:bg-gray-800 transition-all shadow-sm group"
-        >
-          {darkMode ? (
-            <><Sun size={18} className="text-yellow-400 group-hover:rotate-45 transition-transform" /> <span className="text-xs font-bold">Mode Clair</span></>
-          ) : (
-            <><Moon size={18} className="text-indigo-600 group-hover:-rotate-12 transition-transform" /> <span className="text-xs font-bold">Mode Sombre</span></>
-          )}
-        </button>
-
-        <div className="p-4 bg-white/75 dark:bg-gray-900/50 rounded-2xl border border-emerald-100 dark:border-gray-800 backdrop-blur-md">
-          <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-3 font-bold">Réglementation</p>
-          <div className="space-y-2">
+        <div className={`p-4 space-y-3 border-t ${dk ? 'border-[#30363d]' : 'border-[#e1dfdd]'}`}>
+          <div className={`rounded-lg p-3 ${dk ? 'bg-[#161b22] border border-[#30363d]' : 'bg-white border border-[#e1dfdd]'}`}>
+            <p className={`text-[11px] font-semibold mb-2 ${dk ? 'text-[#8b949e]' : 'text-[#616161]'}`}>Réglementation</p>
             <select 
               value={selectedLoi} 
               onChange={(e) => setSelectedLoi(e.target.value)}
-              className="bg-transparent border border-gray-200 dark:border-gray-700 text-sm text-[#58a6ff] rounded-lg p-2 w-full outline-none focus:border-[#58a6ff] transition-all font-semibold"
+              className={`w-full text-[13px] rounded-md p-2 outline-none border ${
+                dk
+                  ? 'bg-[#0d1117] border-[#30363d] text-[#58a6ff] focus:border-[#58a6ff]'
+                  : 'bg-[#fafafa] border-[#e1dfdd] text-[#0f6cbd] focus:border-[#0f6cbd]'
+              }`}
             >
               <option value="09-08">Loi 09-08 (Données)</option>
               <option value="05-20">Loi 05-20 (Cyber)</option>
@@ -274,35 +310,61 @@ const App = () => {
               <option value="contrat">Gestion des Contrats</option>
             </select>
           </div>
+
+          <button 
+            onClick={toggleTheme} 
+            className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-[13px] font-medium transition-colors ${
+              dk
+                ? 'text-[#8b949e] hover:bg-[#161b22]'
+                : 'text-[#616161] hover:bg-[#ebebeb]'
+            }`}
+          >
+            {dk ? (
+              <><Sun size={16} className="text-amber-400" /> Mode clair</>
+            ) : (
+              <><Moon size={16} /> Mode sombre</>
+            )}
+          </button>
         </div>
       </aside>
 
-      {/* --- CONTENT CENTER --- */}
-      <main className="flex-1 flex flex-col relative h-screen bg-emerald-50/10 dark:bg-transparent transition-colors duration-500">
-        <header className="h-20 border-b border-emerald-100 dark:border-gray-800 flex items-center px-10 justify-between backdrop-blur-md bg-white/65 dark:bg-[#0d1117]/60 z-10">
-          <h2 className="text-xl font-bold tracking-tight">
-            {activeTab === 'chat' && 'Assistant Juridique Intelligent'}
-            {activeTab === 'audit' && 'Module d\'Audit Expert'}
-            {activeTab === 'stats' && 'Analytics & Performance'}
+      {/* --- ZONE PRINCIPALE --- */}
+      <main className={`flex-1 flex flex-col h-screen min-w-0 ${dk ? 'bg-[#0d1117]' : 'bg-white'}`}>
+        <header className={`h-14 shrink-0 flex items-center px-6 justify-between border-b ${
+          dk ? 'border-[#30363d] bg-[#0d1117]' : 'border-[#e1dfdd] bg-white'
+        }`}>
+          <h2 className={`text-[15px] font-semibold ${dk ? 'text-[#f0f6fc]' : 'text-[#242424]'}`}>
+            {tabLabels[activeTab]}
           </h2>
-          <div className="flex items-center gap-2 px-3 py-1 rounded-full border bg-emerald-50 border-emerald-200 text-emerald-700">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
-            <span className="text-[11px] font-bold uppercase tracking-wider">API Online</span>
+          <div className="flex items-center gap-2">
+            {activeTab === 'chat' && (
+              <button
+                type="button"
+                onClick={() => { setMessages([]); setInput(''); }}
+                className={`p-2 rounded-lg transition-colors ${
+                  dk ? 'hover:bg-[#161b22] text-[#8b949e]' : 'hover:bg-[#f5f5f5] text-[#616161]'
+                }`}
+                title="Nouvelle conversation"
+              >
+                <Pencil size={18} />
+              </button>
+            )}
+            <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium ${
+              dk ? 'bg-[#238636]/20 text-[#3fb950] border border-[#238636]/40' : 'bg-[#dff6dd] text-[#107c10]'
+            }`}>
+              <span className="w-1.5 h-1.5 rounded-full bg-current" />
+              En ligne
+            </div>
+            <button type="button" className={`p-2 rounded-lg ${dk ? 'hover:bg-[#161b22] text-[#8b949e]' : 'hover:bg-[#f5f5f5] text-[#616161]'}`}>
+              <MoreHorizontal size={18} />
+            </button>
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-10 z-10 custom-scrollbar">
+        <div className={`${messages.length > 0 || activeTab !== 'chat' ? 'flex-1 overflow-y-auto' : 'hidden'} custom-scrollbar ${dk ? 'bg-[#0d1117]' : ''}`}>
           <AnimatePresence mode="wait">
-            {activeTab === 'chat' && (
-              <motion.div key="chat" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-5xl mx-auto space-y-10">
-                {messages.length === 0 && (
-                  <div className="text-center py-24 border border-dashed border-emerald-200 dark:border-gray-800 rounded-[3rem] bg-white/70 dark:bg-transparent backdrop-blur-sm shadow-[0_6px_20px_rgba(15,23,42,0.05)]">
-                    <Zap className="mx-auto text-[#58a6ff] mb-4 opacity-40" size={48} />
-                    <h3 className="text-2xl font-light">Prêt pour une analyse juridique ?</h3>
-                    <p className="text-gray-500 mt-2 text-sm">Posez vos questions sur la réglementation marocaine.</p>
-                  </div>
-                )}
-                
+            {activeTab === 'chat' && messages.length > 0 && (
+              <motion.div key="chat" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-3xl w-full mx-auto px-6 py-8 space-y-8">
                 {messages.map((m, i) => {
                   const isDanger = m.role === 'assistant' && checkDanger(m.content);
                   return (
@@ -311,10 +373,10 @@ const App = () => {
                         <RealisticLawyerAvatar isDanger={isDanger} isThinking={false} />
                       )}
                       
-                      <div className={`max-w-[75%] p-7 rounded-3xl shadow-xl transition-all duration-500 ${
+                      <div className={`max-w-[85%] p-5 rounded-2xl transition-all duration-300 ${
                         m.role === 'user' 
-                          ? 'bg-[#58a6ff] text-white border-transparent' 
-                          : `${darkMode ? 'bg-[#161b22] border-gray-700' : 'bg-white/80 border-emerald-100 backdrop-blur-md'} border-l-8 ${isDanger ? 'border-l-red-600 shadow-red-500/20' : 'border-l-emerald-500 shadow-emerald-500/10'}`
+                          ? (dk ? 'bg-[#1f6feb] text-white' : 'bg-[#0f6cbd] text-white shadow-sm')
+                          : `${dk ? 'bg-[#161b22] border border-[#30363d] text-[#c9d1d9]' : 'bg-[#fafafa] border border-[#e1dfdd] shadow-sm text-[#242424]'} ${isDanger ? 'border-l-4 border-l-red-500' : m.role === 'assistant' && !dk ? 'border-l-4 border-l-[#0f6cbd]' : m.role === 'assistant' && dk ? 'border-l-4 border-l-[#58a6ff]' : ''}`
                       }`}>
                         {isDanger && (
                           <div className="flex items-center gap-2 text-red-500 mb-3 animate-pulse">
@@ -324,9 +386,13 @@ const App = () => {
                         )}
                         <p className="text-sm leading-relaxed font-medium">{m.content}</p>
                         {m.sources && (
-                          <div className="mt-5 flex gap-2 flex-wrap border-t border-gray-500/10 pt-4">
+                          <div className={`mt-5 flex gap-2 flex-wrap border-t pt-4 ${dk ? 'border-[#30363d]' : 'border-gray-500/10'}`}>
                             {m.sources.map((s, idx) => (
-                              <span key={idx} className="text-[10px] font-bold bg-emerald-50 dark:bg-[#0d1117] text-emerald-700 dark:text-[#58a6ff] border border-emerald-200 dark:border-[#58a6ff]/30 px-3 py-1.5 rounded-lg">📄 {s.titre}</span>
+                              <span key={idx} className={`text-[11px] font-medium px-2.5 py-1 rounded-md ${
+                                dk
+                                  ? 'bg-[#0d1117] text-[#58a6ff] border border-[#30363d]'
+                                  : 'bg-white text-[#0f6cbd] border border-[#e1dfdd]'
+                              }`}>📄 {s.titre}</span>
                             ))}
                           </div>
                         )}
@@ -338,21 +404,25 @@ const App = () => {
                 {(loading || isListening) && (
                    <div className="flex items-start gap-6">
                      <RealisticLawyerAvatar isDanger={false} isThinking={true} />
-                     <div className="text-[#58a6ff] text-xs animate-pulse font-mono font-bold mt-10 tracking-widest uppercase">
-                       {isListening ? "Le Maître vous écoute..." : "Analyse des preuves en cours..."}
+                     <div className={`text-xs animate-pulse font-medium mt-10 ${dk ? 'text-[#58a6ff]' : 'text-[#0f6cbd]'}`}>
+                       {isListening ? "Écoute en cours…" : "Analyse en cours…"}
                      </div>
                    </div>
                 )}
               </motion.div>
             )}
 
-            {/* --- ONGLET AUDIT EXPERT AVEC IMPORTATION --- */}
+            {/* --- ONGLET AUDIT EXPERT --- */}
             {activeTab === 'audit' && (
-              <motion.div key="audit" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-3xl mx-auto space-y-8">
-                <div className="bg-white/75 dark:bg-[#161b22] backdrop-blur-md border border-emerald-100 dark:border-[#bc8cff]/30 p-10 rounded-[3rem] shadow-xl shadow-slate-200/40 transition-colors">
-                  <div className="mb-8">
-                    <span className="bg-[#bc8cff]/10 text-[#bc8cff] text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-[#bc8cff]/20">Audit IA Expert</span>
-                    <h3 className="text-3xl font-black mt-4">Analyse de Risque</h3>
+              <motion.div key="audit" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className={`max-w-3xl mx-auto p-8 space-y-6 ${dk ? 'bg-[#0d1117]' : ''}`}>
+                <div className={`p-8 rounded-2xl border ${
+                  dk ? 'bg-[#161b22] border-[#30363d]' : 'bg-white border-[#e1dfdd] shadow-[0_2px_8px_rgba(0,0,0,0.06)]'
+                }`}>
+                  <div className="mb-6">
+                    <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-md ${
+                      dk ? 'bg-[#bc8cff]/15 text-[#bc8cff] border border-[#bc8cff]/25' : 'bg-[#edebe9] text-[#616161]'
+                    }`}>Audit IA Expert</span>
+                    <h3 className={`text-2xl font-semibold mt-3 ${dk ? 'text-[#f0f6fc]' : 'text-[#242424]'}`}>Analyse de risque</h3>
                   </div>
                   
                   <div className="space-y-4">
@@ -362,7 +432,11 @@ const App = () => {
                         setAuditInput(e.target.value);
                         if(e.target.value.trim() !== "") setSelectedFile(null);
                       }}
-                      className="w-full bg-white/60 dark:bg-[#0d1117] border border-emerald-100/90 dark:border-gray-800 rounded-2xl p-5 text-sm outline-none focus:border-emerald-400 dark:focus:border-[#bc8cff] min-h-[140px] transition-all dark:text-white font-medium backdrop-blur-md"
+                      className={`w-full rounded-xl p-4 text-sm outline-none min-h-[140px] transition-all ${
+                        dk
+                          ? 'bg-[#0d1117] border border-[#30363d] text-[#c9d1d9] placeholder:text-[#6e7681] focus:border-[#58a6ff]'
+                          : 'bg-[#fafafa] border border-[#e1dfdd] text-[#242424] focus:border-[#0f6cbd]'
+                      }`}
                       placeholder="Décrivez votre projet juridique ou situation pour évaluer la conformité..."
                       disabled={selectedFile !== null}
                     />
@@ -370,21 +444,31 @@ const App = () => {
                     <textarea
                       value={auditInstruction}
                       onChange={(e) => setAuditInstruction(e.target.value)}
-                      className="w-full bg-white/60 dark:bg-[#0d1117] border border-emerald-100/90 dark:border-gray-800 rounded-2xl p-4 text-sm outline-none focus:border-emerald-400 dark:focus:border-[#bc8cff] min-h-[90px] transition-all dark:text-white font-medium backdrop-blur-md"
+                      className={`w-full rounded-xl p-4 text-sm outline-none min-h-[90px] transition-all ${
+                        dk
+                          ? 'bg-[#0d1117] border border-[#30363d] text-[#c9d1d9] placeholder:text-[#6e7681] focus:border-[#58a6ff]'
+                          : 'bg-[#fafafa] border border-[#e1dfdd] text-[#242424] focus:border-[#0f6cbd]'
+                      }`}
                       placeholder="Consigne d'audit (optionnel) : ex. concentre-toi sur les clauses de confidentialité, responsabilités et sanctions."
                     />
 
                     {/* CADRE EN POINTILLÉS POUR LE DOC PDF/IMAGE */}
-                    <div className="border-2 border-dashed border-emerald-200 dark:border-gray-800 rounded-2xl p-6 bg-white/70 dark:bg-[#0d1117]/30 flex flex-col items-center justify-center gap-2 backdrop-blur-sm">
-                      <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">OU CHARGER UN DOCUMENT (PDF / IMAGE)</p>
+                    <div className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center gap-2 ${
+                      dk ? 'border-[#30363d] bg-[#0d1117]' : 'border-[#e1dfdd] bg-[#fafafa]'
+                    }`}>
+                      <p className={`text-[10px] font-black uppercase tracking-widest ${dk ? 'text-[#8b949e]' : 'text-gray-400'}`}>OU CHARGER UN DOCUMENT (PDF / IMAGE)</p>
                       <input 
                         ref={fileInputRef}
                         type="file" 
                         accept=".pdf,image/*"
                         onChange={handleFileChange}
-                        className="text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-[#bc8cff]/10 file:text-[#bc8cff] hover:file:bg-[#bc8cff]/20 cursor-pointer"
+                        className={`text-xs cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold ${
+                          dk
+                            ? 'text-[#8b949e] file:bg-[#21262d] file:text-[#bc8cff] hover:file:bg-[#30363d]'
+                            : 'text-gray-400 file:bg-[#bc8cff]/10 file:text-[#bc8cff] hover:file:bg-[#bc8cff]/20'
+                        }`}
                       />
-                      <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                      <p className={`text-[11px] ${dk ? 'text-[#8b949e]' : 'text-gray-500'}`}>
                         Formats acceptes: PDF, PNG, JPG, JPEG, WEBP.
                       </p>
                       {selectedFile && (
@@ -409,7 +493,7 @@ const App = () => {
                         <img
                           src={filePreviewUrl}
                           alt="Apercu document"
-                          className="mt-3 max-h-56 rounded-xl border border-gray-200 dark:border-gray-700 object-contain"
+                          className={`mt-3 max-h-56 rounded-xl border object-contain ${dk ? 'border-[#30363d]' : 'border-gray-200'}`}
                         />
                       )}
                     </div>
@@ -417,7 +501,11 @@ const App = () => {
                     <button 
                       onClick={handleLaunchAudit}
                       disabled={loadingAudit}
-                      className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 dark:from-[#bc8cff] dark:to-[#7045af] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-sm shadow-xl shadow-emerald-300/40 hover:opacity-90 transition-all disabled:opacity-50"
+                      className={`w-full text-white py-3.5 rounded-xl font-semibold text-sm transition-all disabled:opacity-50 ${
+                        dk
+                          ? 'bg-[#238636] hover:bg-[#2ea043]'
+                          : 'bg-[#0f6cbd] hover:bg-[#115ea3] shadow-sm'
+                      }`}
                     >
                       {loadingAudit ? "Analyse RAG en cours..." : "Lancer l'Audit Prédictif"}
                     </button>
@@ -426,11 +514,13 @@ const App = () => {
 
                 {/* ZONE DE RÉSULTATS DE L'AUDIT */}
                 {auditResult && (
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-8 rounded-[2.5rem] bg-white/80 dark:bg-[#161b22] border border-emerald-100 dark:border-gray-800 shadow-xl shadow-slate-200/35 backdrop-blur-sm space-y-6">
-                    <div className="flex items-center justify-between border-b border-gray-500/10 pb-4">
-                      <h4 className="text-xl font-bold">Résultat de l'analyse réglementaire</h4>
+                  <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className={`p-8 rounded-2xl border space-y-6 ${
+                    dk ? 'bg-[#161b22] border-[#30363d] text-[#c9d1d9]' : 'bg-white border-[#e1dfdd] shadow-[0_2px_8px_rgba(0,0,0,0.06)]'
+                  }`}>
+                    <div className={`flex items-center justify-between border-b pb-4 ${dk ? 'border-[#30363d]' : 'border-gray-500/10'}`}>
+                      <h4 className={`text-xl font-bold ${dk ? 'text-[#f0f6fc]' : ''}`}>Résultat de l'analyse réglementaire</h4>
                       <div className="flex flex-col items-end">
-                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Score de Risque</span>
+                        <span className={`text-[10px] font-bold uppercase tracking-wider ${dk ? 'text-[#8b949e]' : 'text-gray-400'}`}>Score de Risque</span>
                         <span className={`text-3xl font-black ${auditResult.score > 50 ? 'text-red-500' : 'text-green-500'}`}>
                           {auditResult.score}/100
                         </span>
@@ -439,14 +529,14 @@ const App = () => {
 
                     <div>
                       <h5 className="text-sm font-black text-red-500 uppercase tracking-wider mb-2">🚨 Risques Identifiés :</h5>
-                      <ul className="list-disc list-inside space-y-1.5 text-sm font-medium pl-2">
+                      <ul className={`list-disc list-inside space-y-1.5 text-sm font-medium pl-2 ${dk ? 'text-[#c9d1d9]' : ''}`}>
                         {auditResult.risques?.map((risk, idx) => <li key={idx}>{risk}</li>)}
                       </ul>
                     </div>
 
                     <div>
                       <h5 className="text-sm font-black text-green-500 uppercase tracking-wider mb-2">💡 Recommandations et Conseils :</h5>
-                      <ul className="list-disc list-inside space-y-1.5 text-sm font-medium pl-2">
+                      <ul className={`list-disc list-inside space-y-1.5 text-sm font-medium pl-2 ${dk ? 'text-[#c9d1d9]' : ''}`}>
                         {auditResult.conseils?.map((advice, idx) => <li key={idx}>{advice}</li>)}
                       </ul>
                     </div>
@@ -456,58 +546,109 @@ const App = () => {
             )}
 
             {activeTab === 'stats' && (
-              <motion.div key="stats" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto grid grid-cols-2 gap-8">
-                <StatCard icon={<Globe className="text-[#58a6ff]"/>} title="Documents Indexés" value="5,000+" color="text-[#58a6ff]" desc="Textes de loi officiels" darkMode={darkMode} />
-                <StatCard icon={<Zap className="text-yellow-500"/>} title="Latence RAG" value="0.92s" color={darkMode ? 'text-white' : 'text-gray-800'} desc="Vitesse de traitement" darkMode={darkMode} />
-                <StatCard icon={<Lock className="text-green-500"/>} title="Fiabilité IA" value="94.7%" color="text-green-500" desc="Score de précision" darkMode={darkMode} />
-                <StatCard icon={<FileText className="text-[#bc8cff]"/>} title="Sources" value="82" color="text-[#bc8cff]" desc="Articles cités" darkMode={darkMode} />
+              <motion.div key="stats" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className={`max-w-4xl mx-auto p-8 grid grid-cols-1 sm:grid-cols-2 gap-5 ${dk ? 'bg-[#0d1117]' : ''}`}>
+                <StatCard icon={<Globe className="text-[#58a6ff]"/>} title="Documents Indexés" value="5,000+" color="text-[#58a6ff]" desc="Textes de loi officiels" darkMode={dk} />
+                <StatCard icon={<Zap className="text-yellow-500"/>} title="Latence RAG" value="0.92s" color={dk ? 'text-[#f0f6fc]' : 'text-gray-800'} desc="Vitesse de traitement" darkMode={dk} />
+                <StatCard icon={<Lock className="text-[#3fb950]"/>} title="Fiabilité IA" value="94.7%" color="text-[#3fb950]" desc="Score de précision" darkMode={dk} />
+                <StatCard icon={<FileText className="text-[#bc8cff]"/>} title="Sources" value="82" color="text-[#bc8cff]" desc="Articles cités" darkMode={dk} />
               </motion.div>
             )}
           </AnimatePresence>
         </div>
 
         {activeTab === 'chat' && (
-          <div className="p-10 backdrop-blur-md bg-white/30 dark:bg-transparent transition-colors">
-            <div className="max-w-4xl mx-auto relative group flex gap-3">
-              <div className="relative flex-1">
+          <div className={`px-6 pb-8 ${messages.length === 0 ? 'flex-1 flex flex-col justify-center pt-4' : 'shrink-0 pt-2'} ${dk ? 'bg-[#0d1117]' : 'bg-white'}`}>
+            <div className="max-w-3xl mx-auto w-full">
+              {messages.length === 0 && (
+                <div className="text-center mb-8">
+                  <h3 className={`text-[28px] sm:text-[32px] font-semibold tracking-tight mb-2 ${dk ? 'text-[#f0f6fc]' : 'text-[#242424]'}`}>
+                    Bonjour, comment puis-je vous aider ?
+                  </h3>
+                  <p className={`text-[15px] ${dk ? 'text-[#8b949e]' : 'text-[#616161]'}`}>
+                    Posez vos questions sur la réglementation marocaine.
+                  </p>
+                </div>
+              )}
+              <div className={`relative flex items-center gap-2 rounded-2xl border px-3 py-2 ${
+                dk
+                  ? 'bg-[#161b22] border-[#30363d] shadow-[0_2px_12px_rgba(0,0,0,0.4)]'
+                  : 'bg-white border-[#e1dfdd] shadow-[0_2px_12px_rgba(0,0,0,0.08)]'
+              }`}>
+                <button type="button" className={`p-2 rounded-lg shrink-0 ${dk ? 'text-[#8b949e] hover:bg-[#21262d]' : 'text-[#616161] hover:bg-[#f5f5f5]'}`} title="Pièce jointe">
+                  <Plus size={20} />
+                </button>
                 <input 
                   type="text" 
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                  placeholder="Posez votre question ou utilisez le micro..."
-                  className="w-full bg-white/85 dark:bg-[#161b22] border border-emerald-100 dark:border-gray-700 rounded-2xl py-5 px-8 pr-28 focus:outline-none focus:ring-4 focus:ring-emerald-400/15 dark:focus:border-[#58a6ff] transition-all shadow-xl shadow-slate-200/30 text-sm dark:text-white font-medium backdrop-blur-sm"
+                  placeholder="Message LegalTech AI"
+                  className={`flex-1 py-3 px-1 text-[15px] bg-transparent outline-none ${
+                    dk ? 'text-[#f0f6fc] placeholder:text-[#6e7681]' : 'text-[#242424] placeholder:text-[#a19f9d]'
+                  }`}
                 />
                 <button 
                   type="button"
                   onClick={startListening}
                   disabled={!speechSupported || isTranscribing}
-                  title={speechSupported ? "Dicter avec le micro" : "Micro non supporté sur ce navigateur"}
-                  className={`absolute right-16 top-1/2 -translate-y-1/2 p-2 rounded-xl transition-all ${
+                  title={speechSupported ? "Dicter avec le micro" : "Micro non supporté"}
+                  className={`p-2 rounded-lg shrink-0 transition-all ${
                     (!speechSupported || isTranscribing)
-                      ? 'text-gray-300 cursor-not-allowed'
+                      ? (dk ? 'text-[#484f58] cursor-not-allowed' : 'text-gray-300 cursor-not-allowed')
                       : isListening
-                        ? 'text-red-500 bg-red-500/10 animate-pulse scale-110'
-                        : 'text-gray-400 hover:text-[#58a6ff] hover:bg-blue-500/5'
+                        ? 'text-red-500 bg-red-500/10 animate-pulse'
+                        : dk ? 'text-[#8b949e] hover:bg-[#21262d]' : 'text-[#616161] hover:bg-[#f5f5f5]'
                   }`}
                 >
-                  <Mic size={22} />
+                  <Mic size={20} />
                 </button>
-                <button onClick={handleSendMessage} className="absolute right-3 top-1/2 -translate-y-1/2 p-3 bg-[#58a6ff] text-white rounded-xl shadow-lg hover:scale-105 transition-all">
-                  <Send size={22} />
+                <button
+                  onClick={handleSendMessage}
+                  disabled={!input.trim() && !loading}
+                  className={`p-2 rounded-lg shrink-0 transition-colors ${
+                    dk
+                      ? 'text-[#58a6ff] hover:bg-[#21262d] disabled:opacity-40'
+                      : 'text-[#0f6cbd] hover:bg-[#0f6cbd]/10 disabled:opacity-40'
+                  }`}
+                >
+                  <Send size={20} />
                 </button>
               </div>
+
+              {messages.length === 0 && (
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {chatSuggestions.map((card, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => executeSend(card.prompt)}
+                      className={`text-left p-4 rounded-xl border transition-all ${
+                        dk
+                          ? 'bg-[#161b22] border-[#30363d] hover:border-[#58a6ff]/40 hover:bg-[#21262d]'
+                          : 'bg-white border-[#e1dfdd] shadow-[0_1px_4px_rgba(0,0,0,0.04)] hover:border-[#c8c6c4]'
+                      }`}
+                    >
+                      <div className="mb-2">{card.icon}</div>
+                      <p className={`text-[13px] font-medium leading-snug line-clamp-2 ${dk ? 'text-[#c9d1d9]' : 'text-[#242424]'}`}>
+                        {card.title}
+                      </p>
+                      <p className={`text-[11px] mt-1.5 ${dk ? 'text-[#8b949e]' : 'text-[#616161]'}`}>{card.sub}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {isListening && (
+                <p className={`mt-3 text-xs font-medium ${dk ? 'text-[#8b949e]' : 'text-[#616161]'}`}>
+                  Enregistrement en cours… cliquez sur le micro pour arrêter.
+                </p>
+              )}
+              {isTranscribing && (
+                <p className={`mt-2 text-xs font-medium ${dk ? 'text-[#58a6ff]' : 'text-[#0f6cbd]'}`}>
+                  Transcription en cours…
+                </p>
+              )}
             </div>
-            {isListening && (
-              <p className="max-w-4xl mx-auto mt-3 text-xs text-emerald-700 dark:text-emerald-400 font-semibold">
-                Enregistrement en cours... cliquez sur le micro pour arrêter.
-              </p>
-            )}
-            {isTranscribing && (
-              <p className="max-w-4xl mx-auto mt-2 text-xs text-blue-700 dark:text-blue-400 font-semibold">
-                Transcription en cours...
-              </p>
-            )}
           </div>
         )}
       </main>
@@ -534,28 +675,40 @@ const RealisticLawyerAvatar = ({ isDanger, isThinking }) => (
   </div>
 );
 
-const TabButton = ({ active, onClick, icon, label }) => (
+const TabButton = ({ active, onClick, icon, label, darkMode }) => (
   <button 
     onClick={onClick}
-    className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-300 ${
+    className={`relative w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium transition-colors ${
       active
-        ? 'bg-emerald-50 dark:bg-[#58a6ff]/10 text-emerald-700 dark:text-[#58a6ff] border border-emerald-100 dark:border-[#58a6ff]/20 shadow-sm'
-        : 'text-gray-500 dark:text-gray-400 hover:bg-emerald-50/40 dark:hover:bg-gray-800/40'
+        ? darkMode
+          ? 'bg-[#161b22] text-[#58a6ff] border border-[#30363d]'
+          : 'bg-[#ebebeb] text-[#242424]'
+        : darkMode
+          ? 'text-[#8b949e] hover:bg-[#161b22]'
+          : 'text-[#616161] hover:bg-[#ebebeb]/80'
     }`}
   >
-    {icon}
-    <span className="font-black text-[10px] uppercase tracking-widest">{label}</span>
+    {active && !darkMode && (
+      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#0f6cbd] rounded-r-full" />
+    )}
+    {active && darkMode && (
+      <span className="absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 bg-[#58a6ff] rounded-r-full" />
+    )}
+    <span className="ml-1 opacity-90">{icon}</span>
+    <span>{label}</span>
   </button>
 );
 
 const StatCard = ({ icon, title, value, color, desc, darkMode }) => (
-  <div className={`p-8 rounded-[2.5rem] border transition-all duration-500 ${darkMode ? 'bg-[#161b22] border-gray-800' : 'bg-white/85 border-emerald-100 shadow-lg shadow-slate-200/40 backdrop-blur-sm'}`}>
-    <div className="flex items-center gap-3 mb-6">
+  <div className={`p-6 rounded-2xl border transition-all ${
+    darkMode ? 'bg-[#161b22] border-[#30363d]' : 'bg-white border-[#e1dfdd] shadow-[0_2px_8px_rgba(0,0,0,0.06)]'
+  }`}>
+    <div className="flex items-center gap-2 mb-4">
       {icon}
-      <p className="text-[10px] text-gray-400 uppercase font-black tracking-tighter">{title}</p>
+      <p className={`text-[11px] font-semibold uppercase tracking-wide ${darkMode ? 'text-[#8b949e]' : 'text-[#616161]'}`}>{title}</p>
     </div>
-    <p className={`text-5xl font-black ${color} mb-2 tracking-tighter`}>{value}</p>
-    <p className="text-gray-500 text-xs font-medium">{desc}</p>
+    <p className={`text-4xl font-semibold ${color} mb-1`}>{value}</p>
+    <p className={`text-xs ${darkMode ? 'text-[#8b949e]' : 'text-[#616161]'}`}>{desc}</p>
   </div>
 );
 

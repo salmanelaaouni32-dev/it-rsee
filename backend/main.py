@@ -1,5 +1,5 @@
 import os
-os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN", "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")
+os.environ["HF_TOKEN"] = os.getenv("HF_TOKEN", "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")
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
